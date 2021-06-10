@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Geocode Picker</string>
+    <string name="geocode_value">0000.0000</string>
+    <string name="geocode">Geocode</string>
+</resources>
