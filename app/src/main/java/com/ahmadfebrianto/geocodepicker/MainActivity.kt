@@ -11,7 +11,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerDragListener {
+class MainActivity :
+    AppCompatActivity(),
+    OnMapReadyCallback,
+    GoogleMap.OnMarkerDragListener {
 
     private lateinit var geocode: String
     private lateinit var mainBinding: ActivityMainBinding
@@ -34,6 +37,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         )
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(coordinate, 6.0f))
         googleMap.setOnMarkerDragListener(this)
+
+        googleMap.setOnMapClickListener {
+            googleMap.clear()
+            googleMap.addMarker(
+                MarkerOptions()
+                    .position(it)
+                    .draggable(true)
+            )
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(it, 6.0f))
+            googleMap.setOnMarkerDragListener(this)
+            val gc = extractGeocode(it.toString()).split(",")
+            val lat = gc[0].toDouble()
+            val long = gc[1].toDouble()
+            mainBinding.tvGeocodeValue.text = formatGeocode(lat, long)
+        }
     }
 
     override fun onMarkerDragStart(p0: Marker) {
@@ -41,12 +59,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     }
 
     override fun onMarkerDrag(p0: Marker) {
-        setMarker(p0)
+        setGeocode(p0)
     }
 
     override fun onMarkerDragEnd(p0: Marker) {
-        setMarker(p0)
+        setGeocode(p0)
     }
+
 
     private fun formatGeocode(lat: Double, long: Double): String {
         val newLat = String.format("%.10f", lat)
@@ -54,9 +73,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         return "$newLat,$newLong"
     }
 
-    private fun setMarker(p0: Marker) {
+
+    private fun setGeocode(p0: Marker) {
         val position = p0.position
         geocode = formatGeocode(position.latitude, position.longitude)
         mainBinding.tvGeocodeValue.text = geocode
+    }
+
+    private fun extractGeocode(latLong: String): String {
+        var result = ""
+        val pattern = Regex("""\(([^]]+)\)""")
+        val match = pattern.find(latLong)
+        if (match != null) {
+            result = match.groupValues[1]
+        }
+        return result
     }
 }
