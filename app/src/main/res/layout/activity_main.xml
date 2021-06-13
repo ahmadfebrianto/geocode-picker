@@ -39,7 +39,6 @@
         android:layout_margin="20dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/bg_geocode"
-        android:gravity="center"
         android:padding="10dp"
         android:text="@string/geocode_value"
         android:textSize="20sp"
