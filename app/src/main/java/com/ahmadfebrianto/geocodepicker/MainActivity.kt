@@ -2,8 +2,11 @@ package com.ahmadfebrianto.geocodepicker
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -32,6 +35,18 @@ class MainActivity :
 
         mapFragment?.getMapAsync(this)
         mainBinding.tvGeocodeValue.setOnClickListener(this)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.menu_settings) {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
+        return true
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
